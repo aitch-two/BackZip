@@ -1,0 +1,756 @@
+<html>
+<head>
+	<title>Backup Tool</title>
+	<hta:application id="objHta"
+		applicationname="BackZip"
+		border="dialog"
+		borderstyle="normal"
+		innerborder="no"
+		caption="yes"
+		icon="BackZip.ico"
+		maximizebutton="no"
+		minimizebutton="no"
+		shouintaskbar="yes"
+		singleinstance="yes"
+		sysmenu="yes"
+		version="1.0"
+		windowstate="normal" />
+	<meta http-equiv="MSThemeCompatible" content="yes">
+	<script><!--
+		/*
+		課題
+		
+		設定ファイルに「バックアップ名」を記述する
+		バックアップ名、前回のバックアップ日時を表示する
+		
+		「送る」でバックアップする
+		
+		Lhaplusのpathをどこから取得するか？
+		
+		*/
+		var objWshShell = new ActiveXObject("WScript.Shell");
+		var objFileSystem = new ActiveXObject("Scripting.FileSystemObject");
+		var objWshNetwork = new ActiveXObject("WScript.Network");
+
+		// alert(objHta.commandLine);
+		var args = new HtaArgs(objHta.commandLine);
+		// alert(args.script);
+		// alert(args.unnamed.length);
+		// alert(args.unnamed[0]);
+		// var pathConfig = args.unnamed[0];
+		var pathScript = args.script; // WScript.ScriptFullName
+
+		// 設定ファイルを取得
+		// var dirBackup = pathConfig;
+		// var dirBackup = objFileSystem.GetParentFolderName(pathConfig);
+		var dirBackup = objFileSystem.GetAbsolutePathName(args.unnamed[0])
+
+		// var driveBackup = objFileSystem.GetDriveName(dirBackup);
+		// msgbox driveBackup & " | " & dirBackup
+
+		var dirTool = objFileSystem.GetParentFolderName(pathScript);
+
+		var nameConfig = objFileSystem.GetBaseName(pathScript) + ".xml"
+		// alert("nameConfig = >>>" + nameConfig + "<<<");
+
+		var pathConfig = objFileSystem.BuildPath(dirBackup, nameConfig);
+		// alert("pathConfig = >>>" + pathConfig + "<<<");
+
+		var objConfig;
+		var strPassword;
+		var msgPassword;
+		var bBackup;
+		var objAppcheck = new appcheck();
+		var backup;
+		var msgFinish;
+
+		function window.onload() {
+			// alert("box( " + box.offsetLeft + " , " + box.offsetTop + " )-( " + box.offsetWidth + " x " + box.offsetHeight + " )");
+			// alert("body( " + body.clientWidth + " x " + body.clientHeight + " )");
+			var w = box.offsetWidth + 2 * box.offsetLeft;
+			var h = box.offsetHeight + 2 * box.offsetTop;
+			window.resizeBy(w - body.clientWidth, h - body.clientHeight);
+			nextstep("開始します", step10, 0);
+		}
+
+		function step10(arg) {
+			/**/// alert("step10");
+			objConfig = new clsConfig();
+			var msg = objConfig.Load(pathConfig);
+			/**/// alert("msg = >>>" + msg + "<<<");
+			if (msg == "") {
+				/**/// alert("msg == \"\"");
+				return {
+					message: "",
+					button: [
+						{text: "SKIP", message: "", func: step40, arg: 0 }
+					]
+				};
+			} else {
+				/**/// alert("msg != \"\"");
+				return {
+					message: msg,
+					button: [
+						{text: "OK", message: "", func: step99, arg: 0 }
+					]
+				};
+			}
+		}
+
+
+//		// 対象コンピュータ名、アカウント名を比較
+		function step40(arg) {
+			// alert("backup host = \"" + objConfig.host.toLowerCase() + "\" \"" + objWshNetwork.ComputerName.toLowerCase() + "\"");
+			// alert("backup name = \"" + objConfig.user + "\" \"" + objWshNetwork.UserDomain + "\\" + objWshNetwork.UserName + "\"");
+			// alert("backup rotate = \"" + objConfig.rotate  + "\"");
+
+			if (objConfig.host.toLowerCase() != objWshNetwork.ComputerName.toLowerCase()) {
+				return {
+					message: "コンピュータ名が一致しません。\nバックアップを行いません。",
+					button: [
+						{text: "OK", message: "", func: step99, arg: 0 }
+					]
+				};
+			} else if (objConfig.user.toLowerCase() != (objWshNetwork.UserDomain + "\\" + objWshNetwork.UserName).toLowerCase()) {
+				return {
+					message: "アカウント名が一致しません。\nバックアップを行いません。",
+					button: [
+						{text: "OK", message: "", func: step99, arg: 0 }
+					]
+				};
+			} else {
+				strPassword = "";
+				return {
+					message: "",
+					button: [
+						{text: "SKIP", message: "", func: step50, arg: 0 }
+					]
+				};
+			}
+		}
+
+//		// パスワードを取得
+		function step50(arg) {
+			// alert("filePassword = \"" + objConfig.passfile + "\"");
+			if (objConfig.passfile != "") {
+				if (objFileSystem.FileExists(objConfig.passfile)) {
+					var f = objFileSystem.OpenTextFile(objConfig.passfile, 1); // ForReading
+					strPassword = f.ReadLine();
+					f.Close();
+				}
+			}
+			// alert("strPassword = \"" + strPassword + "\"");
+
+			if (strPassword == "") {
+				msgPassword = "パスワードが正しく設定されていません。\nパスワードを設定せずに、";
+			} else {
+				msgPassword = "パスワードを設定して、";
+			}
+
+			bBackup = true;
+			return {
+				message: "",
+				button: [
+					{text: "SKIP", message: "", func: step60, arg: 0 }
+				]
+			};
+		}
+
+
+//		// 監視対象プロセスが動作していないことを確認
+		function step60(arg) {
+			var nameProcess = "";
+			for (var i = 0; i < objConfig.objProcess.length; ++i) {
+				var x = objConfig.objProcess[i];
+				// alert(">>>\"" + x.path + "\"<<<");
+				if (objAppcheck.Procs(x.path).count > 0) {
+					nameProcess = nameProcess + '\n' + x.name;
+				}
+			}
+			if (nameProcess == "") {
+				return {
+					message: "",
+					button: [
+						{text: "SKIP", message: "", func: step70, arg: 0 }
+					]
+				};
+			} else {
+				return {
+					message: msgPassword + "バックアップを行います。以下のアプリケーションを終了して [再試行] をクリックしてください。\n" + nameProcess,
+					button: [
+						{text: "キャンセル", message: "バックアップを中止します。", func: step69, arg: 0 },
+						{text: "再試行", message: "監視対象プロセスが動作していないことを確認", func: step60, arg: 0 }
+					]
+				};
+			}
+		}
+
+		function step69(arg) {
+			bBackup = false;
+			return {
+				message: "バックアップを中止します。",
+				button: [
+					{text: "OK", message: "", func: step99, arg: 0 }
+				]
+			};
+		}
+
+//		// バックアップ元の存在を確認
+		function step70(arg) {
+			// alert("step70(" + arg + ") : " + objConfig.objSource.length);
+			if (arg >= objConfig.objSource.length) {
+				return {
+					message: "",
+					button: [
+						{text: "SKIP", message: "", func: step80, arg: 0 }
+					]
+				};
+			} else {
+				var x = objConfig.objSource[arg];
+				// alert(x.name);
+				x.exists = objFileSystem.FileExists(x.path) || objFileSystem.FolderExists(x.path);
+				if (x.exists) {
+					return {
+						message: "",
+						button: [
+							{text: "SKIP", message: "", func: step70, arg: arg + 1 }
+						]
+					};
+				} else {
+					return {
+						message: x.name + "（" + x.path + "）は存在しないのでバックアップを行いません。",
+						button: [
+							{text: "OK", message: "", func: step70, arg: arg + 1 }
+						]
+					};
+				}
+			}
+		}
+
+//		// バックアップを実行
+		function step80(arg) {
+			backup = new ZipBackup(objConfig.lhaplus);
+			backup.strPassword = strPassword;
+
+			backup.Open(dirBackup, objConfig.rotate);
+			for (var i = 0; i < objConfig.objSource.length; ++i) {
+				var x = objConfig.objSource[i];
+				// msgbox "name = " & x.name
+				// msgbox "path = " & x.path
+				if (x.exists) {
+					backup.Add(x.path);
+				}
+			}
+			if (backup.Close()) {
+				msgFinish = "バックアップが完了しました。";
+			} else {
+				msgFinish = "バックアップを中止しました。";
+			}
+
+			return {
+				message: "",
+				button: [
+					{text: "SKIP", message: "", func: step90, arg: 0 }
+				]
+			};
+		}
+
+//		// 後処理を実行
+		function step90(arg) {
+			if (arg >= objConfig.objProcess.length) {
+				return {
+					message: msgFinish,
+					button: [
+						{text: "OK", message: "終了", func: step99, arg: 0 }
+					]
+				};
+			} else {
+				var x = objConfig.objProcess[arg];
+				if (x.after == null) {
+					return {
+						message: "",
+						button: [
+							{text: "SKIP", message: "", func: step90, arg: arg + 1 }
+						]
+					};
+				} else {
+					return {
+						message: x.name + " を起動します。よろしいですか？",
+						button: [
+							{text: "はい", message: x.name + " を起動中", func: step91, arg: arg },
+							{text: "いいえ", message: "", func: step90, arg: arg + 1 }
+						]
+					};
+				}
+			}
+		}
+
+		function step91(arg) {
+			// msgbox ">>>""" & x.path & """ " & x.after & "<<<"
+			var x = objConfig.objProcess[arg];
+		    objWshShell.CurrentDirectory = objFileSystem.GetSpecialFolder(0);
+			objWshShell.Run("\"" + x.path + "\" " + x.after);
+			return {
+				message: "",
+				button: [
+					{text: "SKIP", message: "", func: step90, arg: arg + 1 }
+				]
+			};
+		}
+
+		function step99(arg) {
+			// msgbox ">>>""" & x.path & """ " & x.after & "<<<"
+			window.close();
+		}
+
+
+		/* class HtaArgs */
+		function HtaArgs(strCommandLine) {
+			this.script = "";
+			this.named = [];
+			this.unnamed = [];
+
+			var reg = /"([^"]+)"|(^[^ "]+)|([ \t]+)/g;
+			var res = [""];
+			var mat;
+			while (mat = reg.exec(strCommandLine)) {
+				if (mat[3] == "") {
+					res[res.length - 1] += mat[1] || mat[2];
+				} else {
+					res[res.length] = "";
+				}
+			}
+			this.script = res[0];
+
+			var regnamed = /^\/([^:]+):(.*)$|^\/([^:]+)$/;
+			for (var i = 1; i < res.length; ++i) {
+				var m;
+				if (m = regnamed.exec(res[i])) {
+					if (m[3] == "") {
+						this.named[m[1]] = m[2];
+					} else {
+						this.named[m[3]] = "";
+					}
+				} else {
+					this.unnamed[this.unnamed.length] = res[i];
+				}
+			}
+		}
+		/* class HtaArgs */
+
+		var gNextstep00 = window.close;
+		var gNextstep01 = window.close;
+		var gNextstep02 = window.close;
+		var gNextmsg00 = "";
+		var gNextmsg01 = "";
+		var gNextmsg02 = "";
+		var gNextarg00 = 0;
+		var gNextarg01 = 0;
+		var gNextarg02 = 0;
+
+		function nextstep(msg, step, arg) {
+			msgarea.innerText = msg;
+			var result = step(arg);
+			if (result.message == "") {
+				button00.disabled = true;
+				button01.disabled = true;
+				button02.disabled = true;
+				gNextmsg00 = result.button[0].message;
+				gNextstep00 = result.button[0].func;
+				gNextarg00 = result.button[0].arg;
+				setTimeout(function() {nextstep(gNextmsg00, gNextstep00, gNextarg00);}, 1);
+			} else {
+				msgarea.innerText = result.message;
+				if (result.button.length > 0) {
+					button00.value = result.button[0].text;
+					button00.disabled = false;
+					gNextmsg00 = result.button[0].message;
+					gNextstep00 = result.button[0].func;
+					gNextarg00 = result.button[0].arg;
+				} else {
+					button00.disabled = true;
+				}
+				if (result.button.length > 1) {
+					button01.value = result.button[1].text;
+					button01.disabled = false;
+					gNextmsg01 = result.button[1].message;
+					gNextstep01 = result.button[1].func;
+					gNextarg01 = result.button[1].arg;
+				} else {
+					button01.disabled = true;
+				}
+				if (result.button.length > 2) {
+					button02.value = result.button[2].text;
+					button02.disabled = false;
+					gNextmsg02 = result.button[2].message;
+					gNextstep02 = result.button[2].func;
+					gNextarg02 = result.button[2].arg;
+				} else {
+					button02.disabled = true;
+				}
+			}
+		}
+
+		/* appcheck */
+		function appcheck() {
+			this.Procs = function(aExecutablePath) {
+				// var oWMI = new ActiveXObject("winmgmts:{impersonationLevel=impersonate}");
+				var oWMI = new GetObject("winmgmts:{impersonationLevel=impersonate}");
+				// var oWMI = new GetObject("winmgmts:\\\\.\\root\\cimv2");
+
+				// alert("before = " + aExecutablePath);
+				var sQuery = aExecutablePath.replace(/\\/g, "\\\\").replace(/\'/g, "\'\'");
+				// alert("after = " + sQuery);
+				var sqlWMI = "select * from Win32_Process where ExecutablePath = '" + sQuery + "'";
+				// alert(sqlWMI);
+				return (oWMI.ExecQuery(sqlWMI));
+			};
+		}
+		// appcheck
+
+		/* 設定ファイルオブジェクト */
+		function clsConfig() {
+			this.xdocConfig =  new ActiveXObject("Microsoft.XMLDOM");
+			this.title = null;
+			this.lhaplus = null;
+			this.host = null;
+			this.user = null;
+			this.rotate = null;
+			this.passfile = null;
+			this.objSource = new Array();
+			this.objProcess = new Array();
+
+			/* 設定ファイルの読み込み */
+			this.Load = function (pathConfig) {
+				this.title = pathConfig;
+				// result = false; // Load
+				this.xdocConfig.async = false;
+				if (this.xdocConfig.load(pathConfig)) {
+					// msgbox "OK"
+				} else {
+					var xperror = this.xdocConfig.parseError;
+					// MsgBox xperror.reason, vbOKOnly + vbCritical, pathConfig
+					return ("Microsoft.XMLDOM.load(" + pathConfig + ") error: " + xperror.reason);
+				}
+
+				// <backup .. > .. </backup>
+				// 最初の <backup> エレメントを取得
+				var xnodeBackup = null;
+				// alert(this.xdocConfig.childNodes.length);
+				for (var i = 0; i < this.xdocConfig.childNodes.length; ++i) {
+					var x = this.xdocConfig.childNodes[i];
+					// alert(x.nodeName);
+					if (x.nodeName == "backup" && xnodeBackup == null) {
+						xnodeBackup = x;
+					} else {
+						//this.xdocConfig.removeChild(x);
+					}
+				}
+				if (xnodeBackup == null) {
+					// MsgBox "<backup> がありません", vbOKOnly + vbCritical, pathConfig
+					// WScript.Quit(-1)
+					return ("<backup>がありません");
+				}
+
+				// <backup host="HOSTNAME" .. > .. </backup>
+				// <backup> の host アトリビュートを取得
+				var xnodeBackupHost = xnodeBackup.attributes.getNamedItem("host")
+				if (xnodeBackupHost == null) {
+					return ("<backup>のhostが設定されていません");
+				}
+				this.host = xnodeBackupHost.nodeValue;
+
+				// <backup user="DOMAIN\USER" .. > .. </backup>
+				// <backup> の user アトリビュートを取得
+				var xnodeBackupUser = xnodeBackup.attributes.getNamedItem("user");
+				if (xnodeBackupUser == null) {
+					return ("<backup>のuserが設定されていません");
+				}
+				this.user = xnodeBackupUser.nodeValue;
+
+				// <backup rotate="N" .. > .. </backup>
+				// <backup> の rotate アトリビュートを取得
+				var xnodeBackupRotate = xnodeBackup.attributes.getNamedItem("rotate");
+				if (xnodeBackupRotate == null) {
+					return ("<backup>のrotateが設定されていません");
+				}
+				this.rotate = xnodeBackupRotate.nodeValue;
+
+				// <backup passfile="D:\ .. " .. > .. </backup>
+				// <backup> の passfile アトリビュートを取得
+				var xnodeBackupPassfile = xnodeBackup.attributes.getNamedItem("passfile");
+				if (xnodeBackupPassfile == null) {
+					this.passfile = "";
+				} else {
+					this.passfile = xnodeBackupPassfile.nodeValue;
+				}
+
+				// redim preserve objSource(-1)
+				// redim preserve objProcess(-1)
+				var r;
+				for (var i = 0; i < xnodeBackup.childNodes.length; ++i) {
+					x = xnodeBackup.childNodes[i];
+					if (x.nodeName == "title") {
+						this.title = x.text;
+					} else if (x.nodeName == "lhaplus") {
+						this.lhaplus = x.attributes.getNamedItem("path").nodeValue;
+					} else if (x.nodeName == "source") {
+						// <backup> ... <source ... > ... </source> ... </backup>
+						this.objSource[this.objSource.length] = new clsConfigSource();
+						r = this.objSource[this.objSource.length - 1].Load(x);
+						if (r != "") {
+							return (r);
+						}
+					} else if (x.nodeName == "process") {
+						// <backup> ... <process ... > ... </process> ... </backup>
+						this.objProcess[this.objProcess.length] = new clsConfigProcess();
+						r = this.objProcess[this.objProcess.length - 1].Load(x);
+						if (r != "") {
+							return (r);
+						}
+					} else {
+						// xnodeBackup.removeChild(x);
+					}
+				}
+				if (this.lhaplus == null) {
+					return ("<lhaplus>が設定されていません");
+				}
+				if (this.objSource.length <= 0) {
+					return ("<source>が設定されていません");
+				}
+				return "";
+			};
+
+			/* 設定ファイルの保存 */
+			this.Save = function(pathConfig) {
+			//	xnodeXp_suKey.value = textXp_suKey
+			//	xnodeAppKey.value = textAppKey
+			//	xnodePassword.text = textPassword
+			//	xdocConfig.Save pathConfig
+			};
+		} // clsConfig
+
+		/* class clsConfigProcess */
+		function clsConfigProcess() {
+			this.xnodeProcess = null;
+			this.name = null;   // 表示名
+			this.path = null;   // 実行ファイルパス
+			this.before = null; // バックアップ前実行オプション（"" の場合実行なし）
+			this.after = null;  // バックアップ後実行オプション（"" の場合実行なし）
+			this.Load = function(x) {
+				// result = false;
+				xnodeProcess = x;
+				this.name = xnodeProcess.text;
+
+				var xnodeProcessPath = xnodeProcess.attributes.getNamedItem("path");
+				if (xnodeProcessPath == null) {
+					return ("<process>（" + this.name + "）のpathが設定されていません");
+				} else {
+					this.path = xnodeProcessPath.value;
+				}
+
+				var xnodeProcessBefore = xnodeProcess.attributes.getNamedItem("before");
+				if (xnodeProcessBefore == null) {
+					this.before = "";
+				} else {
+					this.before = xnodeProcessBefore.value;
+				}
+
+				var xnodeProcessAfter = xnodeProcess.attributes.getNamedItem("after");
+				if (xnodeProcessAfter == null) {
+					this.after = "";
+				} else {
+					this.after = xnodeProcessAfter.value;
+				}
+				return "";
+			};
+		} // clsConfigProcess
+
+		/* class clsConfigSource */
+		function clsConfigSource() {
+			this.xnodeSource = null;
+			this.name = null;   // 表示名
+			this.path = null;   // バックアップ元ファイル/フォルダパス
+			this.exists = null; // バックアップ元が存在するかどうか
+
+			this.Load = function(x) {
+				// result = false;
+				xnodeSource = x;
+
+				this.name = xnodeSource.text;
+
+				var xnodeSourcePath = xnodeSource.attributes.getNamedItem("path");
+				if (xnodeSourcePath == null) {
+					return ("<source>（" & this.name & "）のpathが設定されていません");
+				} else {
+					// alert("[" + this.name + "] = \"" + xnodeSourcePath.value + "\"");
+					this.path = xnodeSourcePath.value;
+				}
+
+				this.exists = false;
+
+				return ("");
+			};
+		} // clsConfigSource
+
+		// class ZipBackup
+		function ZipBackup(argLhaplus) {
+			// alert(argLhaplus);
+			this.strPassword;
+
+			this.objFileSystem;
+
+			this.patternBackupfile;
+			this.nRotate; // 世代数
+
+			this.pathBackup;
+			this.folderDst;
+
+			this.strSources;
+
+			this.objLhaplus = new Lhaplus(argLhaplus);
+
+			this.Open = function (argBackup, argRotate) {
+				this.objFileSystem = new ActiveXObject("Scripting.FileSystemObject");
+
+				var dirBackup = argBackup;
+				this.pathBackup = this.objFileSystem.BuildPath(dirBackup, this.backupfilename());
+				// alert(this.pathBackup);
+
+				this.nRotate = argRotate;
+
+				// バックアップファイルとして認識するファイル名のパターン
+				this.patternBackupfile = /^\d{14}\.zip$/i; // yyyymmddhhmmss.zip
+
+				// this.strSources = "";
+				this.deleteoldbackup(dirBackup);
+			};
+
+			this.Close = function () {
+				var result = this.objLhaplus.zip(this.pathBackup, this.strPassword);
+				// if boolSuccess then
+				 	this.deleteoldbackup(dirBackup);
+				// else
+				// 	'objFileSystem.DeleteFile pathBackup, true
+				// end if
+				// Close = boolSuccess
+				return result;
+			};
+
+			this.Add = function(pathItem) {
+				this.objLhaplus.add(pathItem);
+				return true;
+			};
+
+			this.deleteoldbackup = function(dirBackup) {
+				// alert("deleteoldbackup(" + dirBackup + ")");
+				var folderBackup = objFileSystem.GetFolder(dirBackup);
+
+				// patternBackupfile で定義された、バックアップファイルを取得
+				var BackupFiles = new Array();
+				for (var fc = new Enumerator(folderBackup.files); !fc.atEnd(); fc.moveNext()) {
+					var file = fc.item();
+					// alert(file.name);
+					if (this.patternBackupfile.test(file.name)) {
+						BackupFiles[BackupFiles.length] = file.name;
+					}
+				}
+
+				// 新しいもの→古いもの順にソート
+				BackupFiles.reverse();
+
+				// 新しいものから nRotate までは残し、それより古いものは削除
+				for (var i = 0; i < BackupFiles.length; ++i) {
+					if (i < this.nRotate) {
+						// alert("残す: " + BackupFiles[i]);
+					} else {
+						var pathDelete = this.objFileSystem.BuildPath(dirBackup, BackupFiles[i]);
+						// alert("削除: " + pathDelete);
+						this.objFileSystem.DeleteFile(pathDelete, true);
+					}
+				}
+			} // deleteoldbackup
+
+			this.backupfilename = function () {
+				var backupdate = new Date(); // 実行日付
+			
+				var strbackupdate = "" + backupdate.getUTCFullYear();
+				if ((backupdate.getUTCMonth() + 1) < 10) {
+					strbackupdate = strbackupdate + "0" + (backupdate.getUTCMonth() + 1);
+				} else {
+					strbackupdate = strbackupdate + (backupdate.getUTCMonth() + 1);
+				}
+				if (backupdate.getUTCDate() < 10) {
+					strbackupdate = strbackupdate + "0" + backupdate.getUTCDate();
+				} else {
+					strbackupdate = strbackupdate + backupdate.getUTCDate();
+				}
+				if (backupdate.getUTCHours() < 10) {
+					strbackupdate = strbackupdate + "0" + backupdate.getUTCHours();
+				} else {
+					strbackupdate = strbackupdate + backupdate.getUTCHours();
+				}
+				if (backupdate.getUTCMinutes() < 10) {
+					strbackupdate = strbackupdate + "0" + backupdate.getUTCMinutes();
+				} else {
+					strbackupdate = strbackupdate + backupdate.getUTCMinutes();
+				}
+				if (backupdate.getUTCSeconds() < 10) {
+					strbackupdate = strbackupdate + "0" + backupdate.getUTCSeconds();
+				} else {
+					strbackupdate = strbackupdate + backupdate.getUTCSeconds();
+				}
+				strbackupdate = strbackupdate + ".zip"
+				return strbackupdate;
+			}; // backupfilename()
+
+		} // class ZipBackup
+
+
+		/* class Lhaplus */
+		function Lhaplus(pathLhaplus) {
+			this.WshShell = new ActiveXObject("WScript.Shell");
+			this.pathLhaplus = pathLhaplus;
+			this.sourcefiles = new Array();
+
+			/* method obj.add(pathFile)
+			 *   pathFile
+			 */
+			this.add = function(pathFile) {
+				this.sourcefiles[this.sourcefiles.length] = pathFile;
+			};
+
+			/* method obj.zip(pathZip, strPasswd)
+			 *   pathZip
+			 *   strPasswd
+			 */
+			this.zip = function(pathZip, strPasswd) {
+				var strCommandline = "\"" + this.pathLhaplus + "\"";
+				strCommandline += " /c:zip"; // "ZIP" format
+				if (strPasswd.length != 0) {
+					strCommandline += " \"/p:" + strPasswd + "\""; // password
+				}
+				strCommandline += " \"/n:" + pathZip + "\""; // output file
+				for (var i = 0; i < this.sourcefiles.length; ++i) {
+					strCommandline += " \"" + this.sourcefiles[i] + "\""; // input file
+				}
+				if (this.WshShell.Run(strCommandline, 1, true) != 0) {
+					return false;
+				}
+				return objFileSystem.FileExists(pathZip);
+			};
+		}
+		//-->
+	</script>
+</head>
+<body id="body" scroll="no" bgcolor="THREEDFACE" style="font: 8pt 'Meiryo'">
+	<table id="box" width="320">
+		<tr height="160" valign="top"><td colspan="3"><div id="msgarea" style="font: 9pt 'Meiryo'"></div></td></tr>
+		<tr>
+			<td align="center"><button id="button00" style="font: 10pt 'Meiryo UI'" onclick="nextstep(gNextmsg00, gNextstep00, gNextarg00);">button00</button></td>
+			<td align="center"><button id="button01" style="font: 10pt 'Meiryo UI'" onclick="nextstep(gNextmsg01, gNextstep01, gNextarg01);">button01</button></td>
+			<td align="center"><button id="button02" style="font: 10pt 'Meiryo UI'" onclick="nextstep(gNextmsg02, gNextstep02, gNextarg02);">button02</button></td>
+		</tr>
+	</table>
+</body>
+</html>
