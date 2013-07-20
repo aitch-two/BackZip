@@ -1,0 +1,6 @@
+*.txt filter=text_plain
+*.hta filter=text_plain
+.gitattributes filter=text_plain
+.gitignore filter=text_plain
+LICENSE filter=text_plain
+README.md filter=text_plain

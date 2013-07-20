@@ -18,14 +18,14 @@
 	<meta http-equiv="MSThemeCompatible" content="yes">
 	<script><!--
 		/*
-		‰Û‘è
+		èª²é¡Œ
 		
-		İ’èƒtƒ@ƒCƒ‹‚ÉuƒoƒbƒNƒAƒbƒv–¼v‚ğ‹Lq‚·‚é
-		ƒoƒbƒNƒAƒbƒv–¼A‘O‰ñ‚ÌƒoƒbƒNƒAƒbƒv“ú‚ğ•\¦‚·‚é
+		è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã«ã€Œãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—åã€ã‚’è¨˜è¿°ã™ã‚‹
+		ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—åã€å‰å›ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—æ—¥æ™‚ã‚’è¡¨ç¤ºã™ã‚‹
 		
-		u‘—‚év‚ÅƒoƒbƒNƒAƒbƒv‚·‚é
+		ã€Œé€ã‚‹ã€ã§ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã™ã‚‹
 		
-		Lhaplus‚Ìpath‚ğ‚Ç‚±‚©‚çæ“¾‚·‚é‚©H
+		Lhaplusã®pathã‚’ã©ã“ã‹ã‚‰å–å¾—ã™ã‚‹ã‹ï¼Ÿ
 		
 		*/
 		var objWshShell = new ActiveXObject("WScript.Shell");
@@ -40,7 +40,7 @@
 		// var pathConfig = args.unnamed[0];
 		var pathScript = args.script; // WScript.ScriptFullName
 
-		// İ’èƒtƒ@ƒCƒ‹‚ğæ“¾
+		// è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—
 		// var dirBackup = pathConfig;
 		// var dirBackup = objFileSystem.GetParentFolderName(pathConfig);
 		var dirBackup = objFileSystem.GetAbsolutePathName(args.unnamed[0])
@@ -70,7 +70,7 @@
 			var w = box.offsetWidth + 2 * box.offsetLeft;
 			var h = box.offsetHeight + 2 * box.offsetTop;
 			window.resizeBy(w - body.clientWidth, h - body.clientHeight);
-			nextstep("ŠJn‚µ‚Ü‚·", step10, 0);
+			nextstep("é–‹å§‹ã—ã¾ã™", step10, 0);
 		}
 
 		function step10(arg) {
@@ -98,7 +98,7 @@
 		}
 
 
-//		// ‘ÎÛƒRƒ“ƒsƒ…[ƒ^–¼AƒAƒJƒEƒ“ƒg–¼‚ğ”äŠr
+//		// å¯¾è±¡ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿åã€ã‚¢ã‚«ã‚¦ãƒ³ãƒˆåã‚’æ¯”è¼ƒ
 		function step40(arg) {
 			// alert("backup host = \"" + objConfig.host.toLowerCase() + "\" \"" + objWshNetwork.ComputerName.toLowerCase() + "\"");
 			// alert("backup name = \"" + objConfig.user + "\" \"" + objWshNetwork.UserDomain + "\\" + objWshNetwork.UserName + "\"");
@@ -106,14 +106,14 @@
 
 			if (objConfig.host.toLowerCase() != objWshNetwork.ComputerName.toLowerCase()) {
 				return {
-					message: "ƒRƒ“ƒsƒ…[ƒ^–¼‚ªˆê’v‚µ‚Ü‚¹‚ñB\nƒoƒbƒNƒAƒbƒv‚ğs‚¢‚Ü‚¹‚ñB",
+					message: "ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿åãŒä¸€è‡´ã—ã¾ã›ã‚“ã€‚\nãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’è¡Œã„ã¾ã›ã‚“ã€‚",
 					button: [
 						{text: "OK", message: "", func: step99, arg: 0 }
 					]
 				};
 			} else if (objConfig.user.toLowerCase() != (objWshNetwork.UserDomain + "\\" + objWshNetwork.UserName).toLowerCase()) {
 				return {
-					message: "ƒAƒJƒEƒ“ƒg–¼‚ªˆê’v‚µ‚Ü‚¹‚ñB\nƒoƒbƒNƒAƒbƒv‚ğs‚¢‚Ü‚¹‚ñB",
+					message: "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆåãŒä¸€è‡´ã—ã¾ã›ã‚“ã€‚\nãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’è¡Œã„ã¾ã›ã‚“ã€‚",
 					button: [
 						{text: "OK", message: "", func: step99, arg: 0 }
 					]
@@ -129,7 +129,7 @@
 			}
 		}
 
-//		// ƒpƒXƒ[ƒh‚ğæ“¾
+//		// ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å–å¾—
 		function step50(arg) {
 			// alert("filePassword = \"" + objConfig.passfile + "\"");
 			if (objConfig.passfile != "") {
@@ -142,9 +142,9 @@
 			// alert("strPassword = \"" + strPassword + "\"");
 
 			if (strPassword == "") {
-				msgPassword = "ƒpƒXƒ[ƒh‚ª³‚µ‚­İ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB\nƒpƒXƒ[ƒh‚ğİ’è‚¹‚¸‚ÉA";
+				msgPassword = "ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãŒæ­£ã—ãè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚\nãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’è¨­å®šã›ãšã«ã€";
 			} else {
-				msgPassword = "ƒpƒXƒ[ƒh‚ğİ’è‚µ‚ÄA";
+				msgPassword = "ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’è¨­å®šã—ã¦ã€";
 			}
 
 			bBackup = true;
@@ -157,7 +157,7 @@
 		}
 
 
-//		// ŠÄ‹‘ÎÛƒvƒƒZƒX‚ª“®ì‚µ‚Ä‚¢‚È‚¢‚±‚Æ‚ğŠm”F
+//		// ç›£è¦–å¯¾è±¡ãƒ—ãƒ­ã‚»ã‚¹ãŒå‹•ä½œã—ã¦ã„ãªã„ã“ã¨ã‚’ç¢ºèª
 		function step60(arg) {
 			var nameProcess = "";
 			for (var i = 0; i < objConfig.objProcess.length; ++i) {
@@ -176,10 +176,10 @@
 				};
 			} else {
 				return {
-					message: msgPassword + "ƒoƒbƒNƒAƒbƒv‚ğs‚¢‚Ü‚·BˆÈ‰º‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ğI—¹‚µ‚Ä [Äs] ‚ğƒNƒŠƒbƒN‚µ‚Ä‚­‚¾‚³‚¢B\n" + nameProcess,
+					message: msgPassword + "ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’è¡Œã„ã¾ã™ã€‚ä»¥ä¸‹ã®ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’çµ‚äº†ã—ã¦ [å†è©¦è¡Œ] ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ã¦ãã ã•ã„ã€‚\n" + nameProcess,
 					button: [
-						{text: "ƒLƒƒƒ“ƒZƒ‹", message: "ƒoƒbƒNƒAƒbƒv‚ğ’†~‚µ‚Ü‚·B", func: step69, arg: 0 },
-						{text: "Äs", message: "ŠÄ‹‘ÎÛƒvƒƒZƒX‚ª“®ì‚µ‚Ä‚¢‚È‚¢‚±‚Æ‚ğŠm”F", func: step60, arg: 0 }
+						{text: "ã‚­ãƒ£ãƒ³ã‚»ãƒ«", message: "ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä¸­æ­¢ã—ã¾ã™ã€‚", func: step69, arg: 0 },
+						{text: "å†è©¦è¡Œ", message: "ç›£è¦–å¯¾è±¡ãƒ—ãƒ­ã‚»ã‚¹ãŒå‹•ä½œã—ã¦ã„ãªã„ã“ã¨ã‚’ç¢ºèª", func: step60, arg: 0 }
 					]
 				};
 			}
@@ -188,14 +188,14 @@
 		function step69(arg) {
 			bBackup = false;
 			return {
-				message: "ƒoƒbƒNƒAƒbƒv‚ğ’†~‚µ‚Ü‚·B",
+				message: "ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä¸­æ­¢ã—ã¾ã™ã€‚",
 				button: [
 					{text: "OK", message: "", func: step99, arg: 0 }
 				]
 			};
 		}
 
-//		// ƒoƒbƒNƒAƒbƒvŒ³‚Ì‘¶İ‚ğŠm”F
+//		// ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒã®å­˜åœ¨ã‚’ç¢ºèª
 		function step70(arg) {
 			// alert("step70(" + arg + ") : " + objConfig.objSource.length);
 			if (arg >= objConfig.objSource.length) {
@@ -218,7 +218,7 @@
 					};
 				} else {
 					return {
-						message: x.name + "i" + x.path + "j‚Í‘¶İ‚µ‚È‚¢‚Ì‚ÅƒoƒbƒNƒAƒbƒv‚ğs‚¢‚Ü‚¹‚ñB",
+						message: x.name + "ï¼ˆ" + x.path + "ï¼‰ã¯å­˜åœ¨ã—ãªã„ã®ã§ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’è¡Œã„ã¾ã›ã‚“ã€‚",
 						button: [
 							{text: "OK", message: "", func: step70, arg: arg + 1 }
 						]
@@ -227,7 +227,7 @@
 			}
 		}
 
-//		// ƒoƒbƒNƒAƒbƒv‚ğÀs
+//		// ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’å®Ÿè¡Œ
 		function step80(arg) {
 			backup = new ZipBackup(objConfig.lhaplus);
 			backup.strPassword = strPassword;
@@ -242,9 +242,9 @@
 				}
 			}
 			if (backup.Close()) {
-				msgFinish = "ƒoƒbƒNƒAƒbƒv‚ªŠ®—¹‚µ‚Ü‚µ‚½B";
+				msgFinish = "ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãŒå®Œäº†ã—ã¾ã—ãŸã€‚";
 			} else {
-				msgFinish = "ƒoƒbƒNƒAƒbƒv‚ğ’†~‚µ‚Ü‚µ‚½B";
+				msgFinish = "ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä¸­æ­¢ã—ã¾ã—ãŸã€‚";
 			}
 
 			return {
@@ -255,13 +255,13 @@
 			};
 		}
 
-//		// Œãˆ—‚ğÀs
+//		// å¾Œå‡¦ç†ã‚’å®Ÿè¡Œ
 		function step90(arg) {
 			if (arg >= objConfig.objProcess.length) {
 				return {
 					message: msgFinish,
 					button: [
-						{text: "OK", message: "I—¹", func: step99, arg: 0 }
+						{text: "OK", message: "çµ‚äº†", func: step99, arg: 0 }
 					]
 				};
 			} else {
@@ -275,10 +275,10 @@
 					};
 				} else {
 					return {
-						message: x.name + " ‚ğ‹N“®‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+						message: x.name + " ã‚’èµ·å‹•ã—ã¾ã™ã€‚ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ",
 						button: [
-							{text: "‚Í‚¢", message: x.name + " ‚ğ‹N“®’†", func: step91, arg: arg },
-							{text: "‚¢‚¢‚¦", message: "", func: step90, arg: arg + 1 }
+							{text: "ã¯ã„", message: x.name + " ã‚’èµ·å‹•ä¸­", func: step91, arg: arg },
+							{text: "ã„ã„ãˆ", message: "", func: step90, arg: arg + 1 }
 						]
 					};
 				}
@@ -408,7 +408,7 @@
 		}
 		// appcheck
 
-		/* İ’èƒtƒ@ƒCƒ‹ƒIƒuƒWƒFƒNƒg */
+		/* è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ */
 		function clsConfig() {
 			this.xdocConfig =  new ActiveXObject("Microsoft.XMLDOM");
 			this.title = null;
@@ -420,7 +420,7 @@
 			this.objSource = new Array();
 			this.objProcess = new Array();
 
-			/* İ’èƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ */
+			/* è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ */
 			this.Load = function (pathConfig) {
 				this.title = pathConfig;
 				// result = false; // Load
@@ -434,7 +434,7 @@
 				}
 
 				// <backup .. > .. </backup>
-				// Å‰‚Ì <backup> ƒGƒŒƒƒ“ƒg‚ğæ“¾
+				// æœ€åˆã® <backup> ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã‚’å–å¾—
 				var xnodeBackup = null;
 				// alert(this.xdocConfig.childNodes.length);
 				for (var i = 0; i < this.xdocConfig.childNodes.length; ++i) {
@@ -447,37 +447,37 @@
 					}
 				}
 				if (xnodeBackup == null) {
-					// MsgBox "<backup> ‚ª‚ ‚è‚Ü‚¹‚ñ", vbOKOnly + vbCritical, pathConfig
+					// MsgBox "<backup> ãŒã‚ã‚Šã¾ã›ã‚“", vbOKOnly + vbCritical, pathConfig
 					// WScript.Quit(-1)
-					return ("<backup>‚ª‚ ‚è‚Ü‚¹‚ñ");
+					return ("<backup>ãŒã‚ã‚Šã¾ã›ã‚“");
 				}
 
 				// <backup host="HOSTNAME" .. > .. </backup>
-				// <backup> ‚Ì host ƒAƒgƒŠƒrƒ…[ƒg‚ğæ“¾
+				// <backup> ã® host ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’å–å¾—
 				var xnodeBackupHost = xnodeBackup.attributes.getNamedItem("host")
 				if (xnodeBackupHost == null) {
-					return ("<backup>‚Ìhost‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<backup>ã®hostãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				}
 				this.host = xnodeBackupHost.nodeValue;
 
 				// <backup user="DOMAIN\USER" .. > .. </backup>
-				// <backup> ‚Ì user ƒAƒgƒŠƒrƒ…[ƒg‚ğæ“¾
+				// <backup> ã® user ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’å–å¾—
 				var xnodeBackupUser = xnodeBackup.attributes.getNamedItem("user");
 				if (xnodeBackupUser == null) {
-					return ("<backup>‚Ìuser‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<backup>ã®userãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				}
 				this.user = xnodeBackupUser.nodeValue;
 
 				// <backup rotate="N" .. > .. </backup>
-				// <backup> ‚Ì rotate ƒAƒgƒŠƒrƒ…[ƒg‚ğæ“¾
+				// <backup> ã® rotate ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’å–å¾—
 				var xnodeBackupRotate = xnodeBackup.attributes.getNamedItem("rotate");
 				if (xnodeBackupRotate == null) {
-					return ("<backup>‚Ìrotate‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<backup>ã®rotateãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				}
 				this.rotate = xnodeBackupRotate.nodeValue;
 
 				// <backup passfile="D:\ .. " .. > .. </backup>
-				// <backup> ‚Ì passfile ƒAƒgƒŠƒrƒ…[ƒg‚ğæ“¾
+				// <backup> ã® passfile ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆã‚’å–å¾—
 				var xnodeBackupPassfile = xnodeBackup.attributes.getNamedItem("passfile");
 				if (xnodeBackupPassfile == null) {
 					this.passfile = "";
@@ -513,15 +513,15 @@
 					}
 				}
 				if (this.lhaplus == null) {
-					return ("<lhaplus>‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<lhaplus>ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				}
 				if (this.objSource.length <= 0) {
-					return ("<source>‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<source>ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				}
 				return "";
 			};
 
-			/* İ’èƒtƒ@ƒCƒ‹‚Ì•Û‘¶ */
+			/* è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®ä¿å­˜ */
 			this.Save = function(pathConfig) {
 			//	xnodeXp_suKey.value = textXp_suKey
 			//	xnodeAppKey.value = textAppKey
@@ -533,10 +533,10 @@
 		/* class clsConfigProcess */
 		function clsConfigProcess() {
 			this.xnodeProcess = null;
-			this.name = null;   // •\¦–¼
-			this.path = null;   // Àsƒtƒ@ƒCƒ‹ƒpƒX
-			this.before = null; // ƒoƒbƒNƒAƒbƒv‘OÀsƒIƒvƒVƒ‡ƒ“i"" ‚Ìê‡Às‚È‚µj
-			this.after = null;  // ƒoƒbƒNƒAƒbƒvŒãÀsƒIƒvƒVƒ‡ƒ“i"" ‚Ìê‡Às‚È‚µj
+			this.name = null;   // è¡¨ç¤ºå
+			this.path = null;   // å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹
+			this.before = null; // ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å‰å®Ÿè¡Œã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼ˆ"" ã®å ´åˆå®Ÿè¡Œãªã—ï¼‰
+			this.after = null;  // ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å¾Œå®Ÿè¡Œã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼ˆ"" ã®å ´åˆå®Ÿè¡Œãªã—ï¼‰
 			this.Load = function(x) {
 				// result = false;
 				xnodeProcess = x;
@@ -544,7 +544,7 @@
 
 				var xnodeProcessPath = xnodeProcess.attributes.getNamedItem("path");
 				if (xnodeProcessPath == null) {
-					return ("<process>i" + this.name + "j‚Ìpath‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<process>ï¼ˆ" + this.name + "ï¼‰ã®pathãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				} else {
 					this.path = xnodeProcessPath.value;
 				}
@@ -569,9 +569,9 @@
 		/* class clsConfigSource */
 		function clsConfigSource() {
 			this.xnodeSource = null;
-			this.name = null;   // •\¦–¼
-			this.path = null;   // ƒoƒbƒNƒAƒbƒvŒ³ƒtƒ@ƒCƒ‹/ƒtƒHƒ‹ƒ_ƒpƒX
-			this.exists = null; // ƒoƒbƒNƒAƒbƒvŒ³‚ª‘¶İ‚·‚é‚©‚Ç‚¤‚©
+			this.name = null;   // è¡¨ç¤ºå
+			this.path = null;   // ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒãƒ•ã‚¡ã‚¤ãƒ«/ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹
+			this.exists = null; // ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—å…ƒãŒå­˜åœ¨ã™ã‚‹ã‹ã©ã†ã‹
 
 			this.Load = function(x) {
 				// result = false;
@@ -581,7 +581,7 @@
 
 				var xnodeSourcePath = xnodeSource.attributes.getNamedItem("path");
 				if (xnodeSourcePath == null) {
-					return ("<source>i" & this.name & "j‚Ìpath‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
+					return ("<source>ï¼ˆ" & this.name & "ï¼‰ã®pathãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“");
 				} else {
 					// alert("[" + this.name + "] = \"" + xnodeSourcePath.value + "\"");
 					this.path = xnodeSourcePath.value;
@@ -601,7 +601,7 @@
 			this.objFileSystem;
 
 			this.patternBackupfile;
-			this.nRotate; // ¢‘ã”
+			this.nRotate; // ä¸–ä»£æ•°
 
 			this.pathBackup;
 			this.folderDst;
@@ -619,7 +619,7 @@
 
 				this.nRotate = argRotate;
 
-				// ƒoƒbƒNƒAƒbƒvƒtƒ@ƒCƒ‹‚Æ‚µ‚Ä”F¯‚·‚éƒtƒ@ƒCƒ‹–¼‚Ìƒpƒ^[ƒ“
+				// ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¦èªè­˜ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒ‘ã‚¿ãƒ¼ãƒ³
 				this.patternBackupfile = /^\d{14}\.zip$/i; // yyyymmddhhmmss.zip
 
 				// this.strSources = "";
@@ -646,7 +646,7 @@
 				// alert("deleteoldbackup(" + dirBackup + ")");
 				var folderBackup = objFileSystem.GetFolder(dirBackup);
 
-				// patternBackupfile ‚Å’è‹`‚³‚ê‚½AƒoƒbƒNƒAƒbƒvƒtƒ@ƒCƒ‹‚ğæ“¾
+				// patternBackupfile ã§å®šç¾©ã•ã‚ŒãŸã€ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—
 				var BackupFiles = new Array();
 				for (var fc = new Enumerator(folderBackup.files); !fc.atEnd(); fc.moveNext()) {
 					var file = fc.item();
@@ -656,23 +656,23 @@
 					}
 				}
 
-				// V‚µ‚¢‚à‚Ì¨ŒÃ‚¢‚à‚Ì‡‚Éƒ\[ƒg
+				// æ–°ã—ã„ã‚‚ã®â†’å¤ã„ã‚‚ã®é †ã«ã‚½ãƒ¼ãƒˆ
 				BackupFiles.reverse();
 
-				// V‚µ‚¢‚à‚Ì‚©‚ç nRotate ‚Ü‚Å‚Íc‚µA‚»‚ê‚æ‚èŒÃ‚¢‚à‚Ì‚Ííœ
+				// æ–°ã—ã„ã‚‚ã®ã‹ã‚‰ nRotate ã¾ã§ã¯æ®‹ã—ã€ãã‚Œã‚ˆã‚Šå¤ã„ã‚‚ã®ã¯å‰Šé™¤
 				for (var i = 0; i < BackupFiles.length; ++i) {
 					if (i < this.nRotate) {
-						// alert("c‚·: " + BackupFiles[i]);
+						// alert("æ®‹ã™: " + BackupFiles[i]);
 					} else {
 						var pathDelete = this.objFileSystem.BuildPath(dirBackup, BackupFiles[i]);
-						// alert("íœ: " + pathDelete);
+						// alert("å‰Šé™¤: " + pathDelete);
 						this.objFileSystem.DeleteFile(pathDelete, true);
 					}
 				}
 			} // deleteoldbackup
 
 			this.backupfilename = function () {
-				var backupdate = new Date(); // Às“ú•t
+				var backupdate = new Date(); // å®Ÿè¡Œæ—¥ä»˜
 			
 				var strbackupdate = "" + backupdate.getUTCFullYear();
 				if ((backupdate.getUTCMonth() + 1) < 10) {
