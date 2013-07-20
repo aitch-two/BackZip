@@ -10,6 +10,7 @@ WindowsのHypertext Apprication（HTA）で実装。
 Zip圧縮にLhaplusが必要。  
 
 バックアップ先のフォルダに設定ファイルを置く。  
+-----------------------------
 **設定ファイルの例**
 
     <?xml version="1.0" encoding="UTF-8" ?>
