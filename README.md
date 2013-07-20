@@ -11,6 +11,7 @@ Zip圧縮にLhaplusが必要。
 
 バックアップ先のフォルダに設定ファイルを置く。  
 **設定ファイルの例**  
+
     <?xml version="1.0" encoding="UTF-8" ?>
     <backup host="aitch2-VaioZ" user="aitch2-VaioZ\aitch2" rotate="5" passfile="C:\Becky!\backupkey.txt">
         <title>Becky! メール</title>
