@@ -3,4 +3,4 @@
 .gitattributes filter=text_plain
 .gitignore filter=text_plain
 LICENSE filter=text_plain
-README.md filter=text_plain
+*.md filter=text_markdown
